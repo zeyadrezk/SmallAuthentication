@@ -51,7 +51,7 @@ if (empty($errors)){
     }
     $user = [];
     $user = json_decode(file_get_contents("../data/users.json"), true);
-    $user [][]=$store; 
+    $user []=$store; 
    file_put_contents("../data/users.json",json_encode($user));
    $_SESSION['success'] = "data has been successfully added";
    $_SESSION['auth']= [$name , $email];
