@@ -2,6 +2,7 @@
 session_start();
 require_once '../core/functions.php' ;
 require_once '../core/validation.php';
+
 $errors = [];
 if(checkRequestMethod("POST") && checkPostInput('name')){
     foreach($_POST as $key => $value){
@@ -45,14 +46,20 @@ if (empty($errors)){
     foreach($_POST as $key =>$value){
         if($key == "password"||$key == "confirm_password"){
             $store[$key]= sha1($value);
+            $hashed= sha1($value);
         }else {
-            $store[$key] = $value;
+            $store[$key]= $value;
+            
         }
     }
-    $user = [];
-    $user = json_decode(file_get_contents("../data/users.json"), true);
-    $user []=$store; 
-   file_put_contents("../data/users.json",json_encode($user));
+    $conn = mysqli_connect("localhost","root","","authentication");
+            if(!$conn){
+                 echo mysqli_connect_error($conn);
+                    }
+    $sql="INSERT INTO `user`(`name`,`email`,`password` ,`confirmPassword`) values('$store[name]','$store[email]','$store[password]','$store[confirm_password]')";
+    $result = mysqli_query($conn , $sql);
+
+
    $_SESSION['success'] = "data has been successfully added";
    $_SESSION['auth']= [$name , $email];
    redirect("../index.php");
@@ -63,14 +70,5 @@ if (empty($errors)){
     die;
 }
 
-
-
-}else echo "not supported method ";
-
-
-
-
-
-
-
+}
 ?>
